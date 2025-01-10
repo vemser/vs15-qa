@@ -1,0 +1,332 @@
+{
+	"info": {
+		"_postman_id": "3510ac7a-6d46-4683-8b6c-5bf0606265a3",
+		"name": "VS15 - ServeRest API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18111986",
+		"_collection_link": "https://solar-robot-356173.postman.co/workspace/Vem-Ser~49d23e03-c4c9-42db-aabf-b9996e9c418b/collection/18111986-3510ac7a-6d46-4683-8b6c-5bf0606265a3?action=share&source=collection_link&creator=18111986"
+	},
+	"item": [
+		{
+			"name": "buscar todos os usuarios",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/usuarios?nome=Marcelo Dalcin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"usuarios"
+					],
+					"query": [
+						{
+							"key": "nome",
+							"value": "Marcelo Dalcin"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "buscar usuario por id valido",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"console.log(pm.environment.get(\"nome\"))\r",
+							"pm.environment.set(\"melhorTurmaQA\", \"Ed15\")\r",
+							"console.log(pm.environment.get(\"melhorTurmaQA\"))"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(\"Após a requisição\")\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/usuarios/:id",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"usuarios",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "pZXChzXILucNldPq"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cadastrar usuario valido",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// selecione aleatoriamente nome e adicione à variável de amebiente\r",
+							"pm.environment.set(\"nome\", pm.environment.replaceIn('{{$randomFullName}}'));\r",
+							"\r",
+							"// selecione aleatoriamente email e adicione à variável de ambiente\r",
+							"pm.environment.set(\"email\", pm.environment.replaceIn('{{$randomEmail}}'))\r",
+							"\r",
+							"// selecione aleatoriamente senha e adicione à variável password\r",
+							"pm.environment.set(\"password\", pm.environment.replaceIn('{{$randomPassword}}'))\r",
+							"\r",
+							"// selecione aleatoriamente um valor booleano e adicione à variável administrador\r",
+							"pm.environment.set(\"administrador\", pm.environment.replaceIn('{{$randomBoolean}}'))\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code é 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verifica cadastro com sucesso\", function () {\r",
+							"    pm.expect(jsonData.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+							"    pm.expect(jsonData._id).to.not.be.null\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"{{nome}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"administrador\": \"{{administrador}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/usuarios",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cadastrar usuario nome nulo",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"// selecione aleatoriamente email e adicione à variável de ambiente\r",
+							"pm.environment.set(\"email\", pm.environment.replaceIn('{{$randomEmail}}'))\r",
+							"\r",
+							"// selecione aleatoriamente senha e adicione à variável password\r",
+							"pm.environment.set(\"password\", pm.environment.replaceIn('{{$randomPassword}}'))\r",
+							"\r",
+							"// selecione aleatoriamente um valor booleano e adicione à variável administrador\r",
+							"pm.environment.set(\"administrador\", pm.environment.replaceIn('{{$randomBoolean}}'))\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code é 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verifica cadastro com nome nulo\", function () {\r",
+							"    pm.expect(jsonData.nome).to.eql(\"nome deve ser uma string\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": null,\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"administrador\": \"{{administrador}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/usuarios",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "atualizar usuario valido",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// selecione aleatoriamente nome e adicione à variável de amebiente\r",
+							"pm.environment.set(\"nome\", pm.environment.replaceIn('{{$randomFullName}}'));\r",
+							"\r",
+							"// selecione aleatoriamente email e adicione à variável de ambiente\r",
+							"pm.environment.set(\"email\", pm.environment.replaceIn('{{$randomEmail}}'))\r",
+							"\r",
+							"// selecione aleatoriamente senha e adicione à variável password\r",
+							"pm.environment.set(\"password\", pm.environment.replaceIn('{{$randomPassword}}'))\r",
+							"\r",
+							"// selecione aleatoriamente um valor booleano e adicione à variável administrador\r",
+							"pm.environment.set(\"administrador\", pm.environment.replaceIn('{{$randomBoolean}}'))\r",
+							"\r",
+							"const usuario = {\r",
+							"    \"nome\": pm.environment.get(\"nome\"),\r",
+							"    \"email\": pm.environment.get(\"email\"),\r",
+							"    \"password\": pm.environment.get(\"password\"),\r",
+							"    \"administrador\": pm.environment.get(\"administrador\")\r",
+							"}\r",
+							"pm.environment.set(\"novoUsuario\", usuario)\r",
+							"\r",
+							"// criando uma requisição POST Cadastro de usuario\r",
+							"const cadastrarUsuario = {\r",
+							"    url: pm.environment.get(\"baseURL\") + \"/usuarios\",\r",
+							"    method: \"POST\",\r",
+							"    header: {\r",
+							"        \"content-type\": \"application/json\",\r",
+							"        \"accept\": \"application/json\"\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: \"raw\",\r",
+							"        raw: JSON.stringify(pm.environment.get(\"novoUsuario\"))\r",
+							"    }\r",
+							"};\r",
+							"pm.sendRequest(cadastrarUsuario, function(err, res) {\r",
+							"    pm.expect(err).is.null;\r",
+							"    pm.environment.set(\"_id\", res.json()._id);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"email\", pm.environment.replaceIn('{{$randomEmail}}'))\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code é 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verifica atualização com sucesso\", function () {\r",
+							"    pm.expect(jsonData.message).to.eql(\"Registro alterado com sucesso\");\r",
+							"});\r",
+							"\r",
+							"pm.sendRequest({\r",
+							"    url: pm.environment.get(\"baseURL\") + \"/usuarios/\" + pm.environment.get(\"_id\"),\r",
+							"    method: \"DELETE\"\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"{{nome}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"administrador\": \"{{administrador}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/usuarios/:id",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"usuarios",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
