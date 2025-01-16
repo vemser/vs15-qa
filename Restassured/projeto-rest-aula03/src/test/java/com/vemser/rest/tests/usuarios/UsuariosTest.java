@@ -1,5 +1,8 @@
 package com.vemser.rest.tests.usuarios;
 
+import com.vemser.rest.client.UsuarioClient;
+import com.vemser.rest.data.factory.UsuarioDataFactory;
+import com.vemser.rest.model.Usuario;
 import com.vemser.rest.model.UsuarioRequest;
 import com.vemser.rest.model.UsuarioResponse;
 import io.restassured.http.ContentType;
@@ -17,6 +20,7 @@ import static org.hamcrest.Matchers.*;
 
 public class UsuariosTest {
 
+    private UsuarioClient usuarioClient = new UsuarioClient();
     Faker faker = new Faker(new Locale("PT-BR"));
     Random geradorBolean = new Random();
 
@@ -122,12 +126,10 @@ public class UsuariosTest {
 
         UsuarioResponse response =
                 given()
-                        .log().all()
                         .pathParam("_id", idUsuario)
                 .when()
                         .get("/usuarios/{_id}")
                 .then()
-                        .log().all()
                         .statusCode(200)
                         .extract()
                         .as(UsuarioResponse.class)
@@ -143,23 +145,26 @@ public class UsuariosTest {
     @Test
     public void testDeveCadastrarUsuarioComDadosValidos() {
 
-        UsuarioRequest usuario = new UsuarioRequest();
-        usuario.setNome(faker.name().fullName());
-        usuario.setEmail(faker.internet().emailAddress());
-        usuario.setPassword(faker.internet().password());
-        usuario.setAdministrador(String.valueOf(geradorBolean.nextBoolean()));
+        Usuario usuario = UsuarioDataFactory.usuarioValido();
 
-        given()
-                .log().all()
-                .contentType(ContentType.JSON)
-                .body(usuario)
-        .when()
-                .post("/usuarios")
+        usuarioClient.cadastrarUsuarios(usuario)
+        .then()
+                .statusCode(200)
+                .body("message", equalTo("Cadastro realizado com sucessooooo"))
+                .body("_id", notNullValue())
+        ;
+    }
+
+    @Test
+    public void testTentarCadastrarUsuarioComEmailEmBranco() {
+
+        Usuario usuarioSemEmail = UsuarioDataFactory.usuarioSemEmail();
+
+        usuarioClient.cadastrarUsuarios(usuarioSemEmail)
         .then()
                 .log().all()
-                .statusCode(201)
-                .body("message", equalTo("Cadastro realizado com sucesso"))
-                .body("_id", notNullValue())
+                .statusCode(400)
+                .body("email", equalTo("email não pode ficar em branco"))
         ;
     }
 
