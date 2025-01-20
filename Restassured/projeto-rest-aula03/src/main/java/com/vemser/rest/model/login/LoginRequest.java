@@ -1,17 +1,15 @@
-package com.vemser.rest.model;
+package com.vemser.rest.model.login;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class Usuario {
+@NoArgsConstructor
+public class LoginRequest {
 
-    private String nome;
     private String email;
     private String password;
-    private String administrador;
 
 }
